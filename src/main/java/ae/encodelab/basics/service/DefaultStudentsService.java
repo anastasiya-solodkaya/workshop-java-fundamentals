@@ -66,10 +66,10 @@ public class DefaultStudentsService implements StudentsService {
     private BasicStudentStatsitics makeBasicStat(Student student) {
         return BasicStudentStatsitics.builder()
                 .birthdayToday(ImplementableResult.of(() -> extension.isBirthdayToday(student.person().birthDate())))
-                .currentAge(ImplementableResult.of(() -> extension.getCurrentAge(student.person().birthDate())))
+                .currentAge(ImplementableResult.of(() -> extension.calculateCurrentAge(student.person().birthDate())))
                 .fresher(ImplementableResult.of(() -> extension.isFresher(student.university().yearOfAdmission())))
                 .graduatingThisYear(ImplementableResult.of(() -> extension.isGraduatingThisYear(student.university().yearOfEducation())))
-                .countOfYearRepeats(ImplementableResult.of(() -> extension.getCountOfRepeatingYears(student.university().yearOfAdmission(),
+                .countOfYearRepeats(ImplementableResult.of(() -> extension.getCountOfFailedYears(student.university().yearOfAdmission(),
                         student.university().yearOfEducation())))
                 .build();
     }

@@ -4,16 +4,13 @@ import ae.encodelab.basics.service.model.stats.ScholarshipSupport;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.Arrays;
-import java.util.OptionalDouble;
 
 public class StudentsDataProcessingExtension {
 
-    public static final int LLAST_EDUCATION_YEAR = 5;
-    public static final int PASS_MARK = 7;
+    public static final int LAST_EDUCATION_YEAR = 5;
+    public static final int PASS_SCORE = 7;
 
-    public int getCountOfRepeatingYears(int yearOfAdmission, int actualYearOfEducation) {
+    public int getCountOfFailedYears(int yearOfAdmission, int actualYearOfEducation) {
         // Check how many times student was repeating the same year of education (e.g. because of illness).
         // For example if student was admitted to university in 2021, they should be on 2d year now.
         // However, if actual year of education is one, this mean that student had to repeat the same year for a second
@@ -34,7 +31,7 @@ public class StudentsDataProcessingExtension {
         throw new NotImplementedException();
     }
 
-    public int getCurrentAge(LocalDate dateOfBirth) {
+    public int calculateCurrentAge(LocalDate dateOfBirth) {
         LocalDate now = LocalDate.now();
         // Check what is this person age.
         // Period.between() to find differences between dates and
@@ -52,6 +49,8 @@ public class StudentsDataProcessingExtension {
     }
 
     public double calculateAverageScore(int[] marks) {
+        // You can get array length from marks.length
+
         throw new NotImplementedException();
 
     }

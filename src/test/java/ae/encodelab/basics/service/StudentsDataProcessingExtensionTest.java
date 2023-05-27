@@ -1,7 +1,6 @@
 package ae.encodelab.basics.service;
 
 import ae.encodelab.basics.service.model.stats.ScholarshipSupport;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -45,9 +44,8 @@ class StudentsDataProcessingExtensionTest {
 
     @ParameterizedTest
     @MethodSource("getCountOfRepeatingYears_Source")
-    void getCountOfRepeatingYears(int yearOfAdmission, int actualYearOfEducation, int expectedResult) {
-//        #TODO add validation error
-        Integer result = extension.getCountOfRepeatingYears(yearOfAdmission, actualYearOfEducation);
+    void getCountOfFailedYears(int yearOfAdmission, int actualYearOfEducation, int expectedResult) {
+        Integer result = extension.getCountOfFailedYears(yearOfAdmission, actualYearOfEducation);
         assertThat(result, equalTo(expectedResult));
     }
 
@@ -101,7 +99,7 @@ class StudentsDataProcessingExtensionTest {
         MockedStatic<Clock> clockMockedStatic = mockStatic(Clock.class);
         try (clockMockedStatic) {
             clockMockedStatic.when(Clock::systemDefaultZone).thenReturn(fixedClock);
-            Integer result = extension.getCurrentAge(dateOfBirth);
+            Integer result = extension.calculateCurrentAge(dateOfBirth);
             assertThat(result, equalTo(expectedResult));
         }
     }
@@ -131,7 +129,7 @@ class StudentsDataProcessingExtensionTest {
 
     public static Stream<Arguments> calculateAverageScore_Source() {
         return Stream.of(
-                Arguments.of(new int[0], null),
+                Arguments.of(new int[0], 0.0),
                 Arguments.of(new int[]{1}, 1.0),
                 Arguments.of(new int[]{1, 2}, 1.5),
                 Arguments.of(new int[]{1, 3}, 2.0),
@@ -154,7 +152,7 @@ class StudentsDataProcessingExtensionTest {
 
     public static Stream<Arguments> findMaxCourseScore_Source() {
         return Stream.of(
-                Arguments.of(new double[0], null),
+                Arguments.of(new double[0], 0.0),
                 Arguments.of(new double[]{1.0}, 1.0),
                 Arguments.of(new double[]{1.0, 2.0}, 2.0),
                 Arguments.of(new double[]{2.0, 1.0}, 2.0),
@@ -172,7 +170,7 @@ class StudentsDataProcessingExtensionTest {
 
     public static Stream<Arguments> findMinCourseScore_Source() {
         return Stream.of(
-                Arguments.of(new double[0], null),
+                Arguments.of(new double[0], 0.0),
                 Arguments.of(new double[]{1.0}, 1.0),
                 Arguments.of(new double[]{1.0, 2.0}, 1.0),
                 Arguments.of(new double[]{2.0, 1.0}, 1.0),

@@ -1,0 +1,18 @@
+.link-body-emphasis {
+    color: #000;
+}
+
+.bi-gender-female {
+    color: hotpink;
+}
+
+.bi-gender-male {
+    color: deepskyblue;
+}
+
+.student-link > span {
+    border-bottom: 1px dashed gray;
+}
+
+.span-num {
+}

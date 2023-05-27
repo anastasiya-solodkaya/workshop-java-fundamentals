@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base.html}">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<li layout:fragment="home-menu"><a th:href="@{/}" class="nav-link active" aria-current="page">Home</a></li>
+<section layout:fragment="page-header" class="container">
+    <div class="row">
+        <h1 class="text-center mt-5 mb-4">Students</h1>
+    </div>
+    <div class="row">
+        <div class="col-12 mb-5 text-center">
+            <a th:href="@{/students}" class="btn btn-lg btn-success" >View All Students</a>
+        </div>
+    </div>
+    <div class="row text-center">
+        <h2 class="text-center mb-4">View By Department</h2>
+    </div>
+    <div class="row">
+        <th:block th:each="d: ${departments}">
+        <div class="col-3 text-center">
+                <a th:href="@{/department/{code}/students(code = ${d.code()})}" class="btn btn-lg btn-warning mx-5 mb-5 w-100" ><th:block th:text="${d.name()}"></th:block></a>
+        </div>
+        </th:block>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base.html}">
+<head>
+    <title>
+        <th:block th:if="${departmentName}">
+        Students of <th:block th:text="${departmentName}"></th:block> Department.
+        </th:block>
+        <th:block th:unless="${departmentName}">
+        All Students.
+        </th:block>
+    </title>
+</head>
+<body>
+<li layout:fragment="home-menu"><a th:href="@{/}" class="nav-link active" aria-current="page">Home</a></li>
+<section layout:fragment="page-header" class="container">
+
+    <div class="row">
+        <div th:if="${departmentName}">
+            <h1 class="text-center mt-5 mb-4">Students of <span class="text-success"><th:block th:text="${departmentName}"></th:block> Department</span>.</h1>
+        </div>
+        <div th:unless="${departmentName}">
+            <h1 class="text-center mt-5 mb-4">All Students.</h1>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="col-12 fs-5 text-center mb-4">
+                <div class="d-inline-block px-5"
+                     th:with="prevPage=${students.previousOrFirstPageable().getPageNumber()},nextPage=${students.nextOrLastPageable().getPageNumber()}">
+                    <a th:if="${!students.isFirst()}" class="span-num text-primary" th:href="@{{url}(page=0,url=${url})}">1</a>
+                    <span th:if="${!students.isFirst()}" class="text-muted mx-3">...</span>
+                    <a th:if="${students.hasPrevious()}" class="text-black" th:href="@{{url}(page=${prevPage},url=${url})}"><i
+                            class="bi bi-chevron-left"></i></a>
+                    <span th:text="${students.getNumber() + 1}" class="span-num text-primary"></span>
+                    <a th:if="${students.hasNext()}" class="text-black" th:href="@{{url}(page=${nextPage},url=${url})}"><i
+                            class="bi bi-chevron-right"></i></a>
+                    <span th:if="${!students.isLast()}" class="text-muted mx-3">...</span>
+                    <a th:if="${!students.isLast()}" th:text="${students.getTotalPages()}" class="span-num text-primary"
+                       th:href="@{{url}(page=${students.getTotalPages()-1},url=${url})}"></a>
+                </div>
+                <div class="display-inline-block text-muted fs-6 fst-italic">
+                    Showing <th:block th:text="${students.getNumberOfElements()}"></th:block> students out of <th:block th:text="${students.getTotalElements()}"></th:block>.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section layout:fragment="table" class="fs-5">
+
+    <div class="container fw-bold">
+        <div class="row border-bottom">
+            <div class="col-2 text-start border-end">
+                Student
+            </div>
+            <div class="col-2 text-start border-end">
+                Birth Date
+            </div>
+            <div class="col-2 text-center border-end">
+                Admission
+            </div>
+            <div class="col-2 text-end border-end">
+                Current Year
+            </div>
+            <div class="col-2 text-end">
+                Repeated Years
+            </div>
+            <div class="col-2 text-end">
+                Department
+            </div>
+        </div>
+    </div>
+    <th:block th:each="s: ${students}">
+
+
+        <div class="container">
+            <div class="row border-bottom">
+                <div class="col-2 text-start  border-end">
+                    <a th:href="@{/student/{id}(id=${s.getId()})}" class="link-body-emphasis text-decoration-none student-link">
+                    <th:block th:if="${s.getPersonalInfo().isGender()}">
+                        <i class="bi bi-gender-female"></i>
+                    </th:block>
+                    <th:block th:unless="${s.getPersonalInfo().isGender()}">
+                        <i class="bi bi-gender-male"></i>
+                    </th:block>
+                        <span>
+                    <th:block th:text="${s.getPersonalInfo().getLastName()}"></th:block>
+                            <th:block th:text="${s.getPersonalInfo().getFirstName()}"></th:block>
+                        </span>
+                    </a>
+                </div>
+                <div class="col-2 text-start border-end">
+                    <th:block th:text="${s.getPersonalInfo().getDateOfBirth()}"></th:block>
+                    <span class="student-age mx-1 text-muted">(<th:block th:text="${s.getStats().getCurrentAge()}"></th:block>)</span>
+                    <th:block th:if="${s.getStats().getBirthdayToday() == null}">
+                        <i class="bi bi-emoji-expressionless-fill text-muted"></i>
+                    </th:block>
+                    <th:block th:if="${s.getStats().getBirthdayToday()}">
+                        <i class="bi bi-balloon-fill text-warning ms-2"></i>
+                    </th:block>
+                </div>
+                <div class="col-2 text-center border-end"><span class="fst-italic"><th:block th:text="${s.getYearStarted()}"></th:block></span></div>
+                <div class="col-2 text-end border-end">
+                    <th:block th:if="${s.getStats().getGraduatingThisYear()}">
+                        <i class="bi bi-mortarboard-fill text-danger"></i>
+                    </th:block>
+                    <th:block th:if="${s.getStats().getFresher()}">
+                        <i class="bi bi-lightning-charge text-primary"></i>
+                    </th:block>
+                    <th:block th:text="${s.getCurrentYearOfEducation()}"></th:block>
+                </div>
+                <div class="col-2 text-end"><th:block th:text="${s.getStats().getCountOfYearRepeats()}"></th:block></div>
+                <div class="col-2 text-end">
+                    <a th:href="@{/department/{code}/students(code=${s.getDepartmentCode()})}" class="link-body-emphasis text-decoration-none student-link">
+                        <span><th:block th:text="${s.getDepartmentName()}"></th:block></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</section>
+</body>
+</html>

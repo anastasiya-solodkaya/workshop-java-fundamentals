@@ -1,0 +1,36 @@
+teacher_id,year_of_joining,department,title
+15,2015,PHYS,Professor
+3,2000,MAN,Associate Professor
+6,2004,PHYS,Professor
+12,2014,PHYS,Associate Professor
+17,2013,MATH,Professor
+10,2005,BUS,Associate Professor
+13,2009,MAN,Professor
+19,2011,PHYS,Professor
+8,2017,GEO,Associate Professor
+2,2007,GEO,Professor
+15,2020,PHIL,Professor
+13,2001,PHIL,Associate Professor
+3,2004,PHIL,Associate Professor
+6,2015,INF,Professor
+14,2017,LIT,Professor
+3,2018,MAN,Professor
+19,2023,HIST,Professor
+3,2013,MATH,Professor
+11,2006,LIT,Associate Professor
+9,2002,MAN,Associate Professor
+18,2007,MAN,Professor
+4,2002,LIT,Professor
+13,2011,LIT,Professor
+2,2001,GEO,Associate Professor
+8,2019,LIT,Professor
+6,2002,PHIL,Professor
+1,2010,POL,Professor
+20,2003,MAN,Professor
+19,2013,BUS,Professor
+5,2019,GEO,Professor
+10,2023,INF,Associate Professor
+13,2012,MATH,Professor
+13,2009,POL,Professor
+16,2016,GEO,Associate Professor
+8,2001,POL,Associate Professor

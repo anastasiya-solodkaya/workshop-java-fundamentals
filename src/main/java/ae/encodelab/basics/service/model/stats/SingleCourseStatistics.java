@@ -1,11 +1,25 @@
 package ae.encodelab.basics.service.model.stats;
 
 import lombok.Builder;
-import lombok.Getter;
 
 @Builder
-@Getter
 public class SingleCourseStatistics {
-    private final double average;
-    private final boolean passed;
+    private final ImplementableResult<Double> average;
+    private final ImplementableResult<Boolean> passed;
+
+    public Double getAverage() {
+        return average.get();
+    }
+
+    public Double getAverageOrElse(double defaultValue) {
+        return average.getOrElse(defaultValue);
+    }
+
+    public Boolean isPassed() {
+        return passed.get();
+    }
+
+    public Boolean isPassedOrElse(boolean defaultValue) {
+        return passed.getOrElse(defaultValue);
+    }
 }

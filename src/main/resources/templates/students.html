@@ -93,27 +93,42 @@
                 </div>
                 <div class="col-2 text-start border-end">
                     <th:block th:text="${s.getPersonalInfo().getDateOfBirth()}"></th:block>
-                    <span class="student-age mx-1 text-muted">(<th:block th:text="${s.getStats().getCurrentAge()}"></th:block>)</span>
-                    <th:block th:if="${s.getStats().getBirthdayToday() == null}">
-                        <i class="bi bi-emoji-expressionless-fill text-muted"></i>
+                    <th:block th:if="${s.getStats().getCurrentAge()}">
+                        <span class="student-age mx-1 text-muted">(<th:block th:text="${s.getStats().getCurrentAge()}"></th:block>)</span>
                     </th:block>
-                    <th:block th:if="${s.getStats().getBirthdayToday()}">
+                    <th:block th:unless="${s.getStats().getCurrentAge()}">
+                        <i class="bi bi-exclamation-square-fill text-info"  title="Age"></i>
+                    </th:block>
+
+                    <th:block th:if="${s.getStats().isBirthdayToday() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info" title="Birthday Indicator"></i>
+                    </th:block>
+                    <th:block th:if="${s.getStats().isBirthdayToday()}">
                         <i class="bi bi-balloon-fill text-warning ms-2"></i>
                     </th:block>
                 </div>
                 <div class="col-1 text-center border-end"><span class="fst-italic"><th:block th:text="${s.getYearStarted()}"></th:block></span></div>
                 <div class="col-1 text-end border-end">
-                    <th:block th:if="${s.getStats().getGraduatingThisYear()}">
+                    <th:block th:if="${s.getStats().isGraduatingThisYear()}">
                         <i class="bi bi-mortarboard-fill text-danger"></i>
                     </th:block>
-                    <th:block th:if="${s.getStats().getFresher()}">
+                    <th:block th:if="${s.getStats().isGraduatingThisYear() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info"  title="Graduation Indicator"></i>
+                    </th:block>
+                    <th:block th:if="${s.getStats().isFresher()}">
                         <i class="bi bi-lightning-charge text-primary"></i>
+                    </th:block>
+                    <th:block th:if="${s.getStats().isFresher() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info"  title="Fresher Indicator"></i>
                     </th:block>
                     <th:block th:text="${s.getCurrentYearOfEducation()}"></th:block>
                 </div>
                 <div class="col-2 text-end border-end">
                     <th:block th:if="${s.getStats().getCountOfYearRepeats() > 0}">
                     <th:block th:text="${s.getStats().getCountOfYearRepeats()}"></th:block>
+                    </th:block>
+                    <th:block th:if="${s.getStats().getCountOfYearRepeats() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info"  title="Failed Years Count"></i>
                     </th:block>
                 </div>
                 <div class="col-3 text-end">

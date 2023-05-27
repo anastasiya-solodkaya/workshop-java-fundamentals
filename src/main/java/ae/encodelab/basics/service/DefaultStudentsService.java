@@ -10,10 +10,7 @@ import ae.encodelab.basics.service.model.StudentBasicInfo;
 import ae.encodelab.basics.service.model.StudentDetailedInfo;
 import ae.encodelab.basics.service.model.journals.CourseMarks;
 import ae.encodelab.basics.service.model.journals.StudentJournalYearRecord;
-import ae.encodelab.basics.service.model.stats.BasicStudentStatsitics;
-import ae.encodelab.basics.service.model.stats.ScholarshipSupport;
-import ae.encodelab.basics.service.model.stats.SingleCourseStatistics;
-import ae.encodelab.basics.service.model.stats.SingleYearStatistics;
+import ae.encodelab.basics.service.model.stats.*;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -68,12 +65,12 @@ public class DefaultStudentsService implements StudentsService {
 
     private BasicStudentStatsitics makeBasicStat(Student student) {
         return BasicStudentStatsitics.builder()
-                .birthdayToday(extension.isBirthdayToday(student.person().birthDate()))
-                .currentAge(extension.getCurrentAge(student.person().birthDate()))
-                .fresher(extension.isFresher(student.university().yearOfAdmission()))
-                .graduatingThisYear(extension.isGraduatingThisYear(student.university().yearOfEducation()))
-                .countOfYearRepeats(extension.getCountOfRepeatingYears(student.university().yearOfAdmission(),
-                        student.university().yearOfEducation()))
+                .birthdayToday(ImplementableResult.of(() -> extension.isBirthdayToday(student.person().birthDate())))
+                .currentAge(ImplementableResult.of(() -> extension.getCurrentAge(student.person().birthDate())))
+                .fresher(ImplementableResult.of(() -> extension.isFresher(student.university().yearOfAdmission())))
+                .graduatingThisYear(ImplementableResult.of(() -> extension.isGraduatingThisYear(student.university().yearOfEducation())))
+                .countOfYearRepeats(ImplementableResult.of(() -> extension.getCountOfRepeatingYears(student.university().yearOfAdmission(),
+                        student.university().yearOfEducation())))
                 .build();
     }
 
@@ -85,32 +82,42 @@ public class DefaultStudentsService implements StudentsService {
             Map<String, SingleCourseStatistics> averages = new HashMap<>();
             for (CourseMarks marks : courseMarks) {
                 String courseCode = marks.getCode();
-                double avgScore = extension.calculateAverageScore(
-                        marks.getMarks().stream().mapToInt(t -> t).toArray());
-                boolean passed = extension.checkCoursePassed(avgScore);
+                ImplementableResult<Double> avgScore = ImplementableResult.of(()->extension.calculateAverageScore(
+                        marks.getMarks().stream().mapToInt(t -> t).toArray()));
+                ImplementableResult<Boolean> passed = ImplementableResult.of( () -> extension.checkCoursePassed(avgScore.getOrElse(0.0)));
                 averages.put(courseCode, SingleCourseStatistics.builder()
                         .average(avgScore)
                         .passed(passed)
                         .build());
             }
-            double[] coursesAverages = averages.values().stream().mapToDouble(SingleCourseStatistics::getAverage).toArray();
+            double[] coursesAverages = averages.values().stream().mapToDouble(s -> s.getAverageOrElse(0.0)).toArray();
             boolean[] passes = new boolean[averages.size()];
             List<SingleCourseStatistics> values = new ArrayList<>(averages.values());
             for (int i = 0; i < values.size(); i++) {
-                passes[i] = values.get(i).isPassed();
+                passes[i] = values.get(i).isPassedOrElse(false);
             }
             int[] allMarks = courseMarks.stream().flatMapToInt(t -> t.getMarks().stream().mapToInt(o -> o)).toArray();
-            double averageYearScore = extension.calculateAverageScore(allMarks);
-            ScholarshipSupport support = previous == null ? ScholarshipSupport.STANDARD :
-                    extension.getScholarshipSupport(previous.isPassed(), previous.getAverageScore(), previous.getMinCourseScore());
+            ImplementableResult<Double> averageYearScore = ImplementableResult.of(() -> extension.calculateAverageScore(allMarks));
+            ImplementableResult<ScholarshipSupport> support;
+            if (previous == null) {
+                support = ImplementableResult.of(() -> ScholarshipSupport.STANDARD);
+            } else {
+                SingleYearStatistics p = previous;
+                ImplementableResult<ScholarshipSupport> calculatedSupport = ImplementableResult.of(() -> extension.getScholarshipSupport(
+                        p.isPassedOrElse(false),
+                        p.getAverageScoreOrElse(0.0),
+                        p.getMinCourseScoreOrElse(0.0))
+                );
+                support = calculatedSupport;
+            }
             SingleYearStatistics yearStatistics = SingleYearStatistics.builder()
                     .courseAverageScore(averages)
                     .year(mark.getYear())
-                    .maxCourseScore(extension.findMaxCourseScore(coursesAverages))
-                    .minCourseScore(extension.findMinCourseScore(coursesAverages))
+                    .maxCourseScore(ImplementableResult.of(() -> extension.findMaxCourseScore(coursesAverages)))
+                    .minCourseScore(ImplementableResult.of(() -> extension.findMinCourseScore(coursesAverages)))
                     .averageScore(averageYearScore)
-                    .passed(extension.checkYearPassed(passes))
-                    .scholarshipSupport(support.name())
+                    .passed(ImplementableResult.of(() -> extension.checkYearPassed(passes)))
+                    .scholarshipSupport(support)
                     .build();
             previous = yearStatistics;
             stats.add(yearStatistics);

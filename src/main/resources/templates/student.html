@@ -12,10 +12,10 @@
 <section layout:fragment="page-header" class="container">
     <div class="row">
 
-            <h1 class="text-center mt-5 mb-4">
-                <th:block th:text="${student.getPersonalInfo().getFirstName()}"></th:block>
-                <th:block th:text="${student.getPersonalInfo().getLastName()}"></th:block>
-            </h1>
+        <h1 class="text-center mt-5 mb-4">
+            <th:block th:text="${student.getPersonalInfo().getFirstName()}"></th:block>
+            <th:block th:text="${student.getPersonalInfo().getLastName()}"></th:block>
+        </h1>
 
     </div>
 
@@ -35,7 +35,8 @@
                 Department
             </div>
             <div class="col-4 text-start">
-                <a th:href="@{/department/{code}/students(code=${student.getDepartmentCode()})}" class="link-body-emphasis text-decoration-none student-link">
+                <a th:href="@{/department/{code}/students(code=${student.getDepartmentCode()})}"
+                   class="link-body-emphasis text-decoration-none student-link">
                     <span><th:block th:text="${student.getDepartmentName()}"></th:block></span>
                 </a>
             </div>
@@ -55,10 +56,10 @@
                 Current Year
             </div>
             <div class="col-4 text-start">
-                <th:block th:if="${student.getStats().getGraduatingThisYear()}">
+                <th:block th:if="${student.getStats().isGraduatingThisYear()}">
                     <i class="bi bi-mortarboard-fill text-danger"></i>
                 </th:block>
-                <th:block th:if="${student.getStats().getFresher()}">
+                <th:block th:if="${student.getStats().isFresher()}">
                     <i class="bi bi-lightning-charge text-primary"></i>
                 </th:block>
                 <th:block th:text="${student.getCurrentYearOfEducation()}"></th:block>
@@ -69,10 +70,10 @@
             </div>
             <div class="col-4 text-start">
                 <th:block th:text="${student.getPersonalInfo().getDateOfBirth()}"></th:block>
-                <th:block th:if="${student.getStats().getBirthdayToday() == null}">
-                    <i class="bi bi-emoji-expressionless-fill text-muted"></i>
+                <th:block th:if="${student.getStats().isBirthdayToday() == null}">
+                    <i class="bi bi-exclamation-square-fill text-info" title="Birthday Indicator"></i>
                 </th:block>
-                <th:block th:if="${student.getStats().getBirthdayToday()}">
+                <th:block th:if="${student.getStats().isBirthdayToday()}">
                     <i class="bi bi-balloon-fill text-warning ms-2"></i>
                 </th:block>
 
@@ -89,16 +90,27 @@
     <th:block th:each="j: ${student.getJournal()}">
         <div class="container border border-2 rounded border-primary my-4">
             <div class="row bg-primary text-white py-3 justify-content-between">
-                <div class="col-1 fw-bold">
-                    Year #<th:block th:text="${j.getYearOfEducation()}"></th:block>.
+                <div class="col-2 fw-bold">
+                    Year #
+                    <th:block th:text="${j.getYearOfEducation()}"></th:block>
                 </div>
                 <div class="col-3 text-center">
                     <th:block th:if="${j.getYear() == 2023}">
-                        <span class="text-warning fw-bold">Scholarship: <th:block th:text="${student.getYearStats(j.getYear()).getScholarshipSupport()}">
-                        </th:block></span>
+
+
+                        <span class="text-warning fw-bold">Scholarship:
+                        <th:block th:if="${student.getYearStats(j.getYear()).getScholarshipSupportValue() == null}">
+                            <i class="bi bi-exclamation-square-fill text-warning" title="Scholarship Type"></i>
+                        </th:block>
+
+                        <th:block th:unless="${student.getYearStats(j.getYear()).getScholarshipSupportValue() == null}">
+                            <th:block th:text="${student.getYearStats(j.getYear()).getScholarshipSupportValue()}">
+                            </th:block>
+                        </th:block>
+                        </span>
                     </th:block>
                 </div>
-                <div class="col-1 text-end">
+                <div class="col-2 text-end">
                     <th:block th:text="${j.getYear()}"></th:block>
                 </div>
             </div>
@@ -109,19 +121,30 @@
                     </div>
                     <div class="col-5">
                         <th:block th:each="mark: ${m.getMarks()}">
-                        <th:block th:text='${mark}'></th:block>
+                            <th:block th:text='${mark}'></th:block>
                         </th:block>
                     </div>
                     <div class="col-2">
                         <i class="bi bi-arrow-right-short"></i>
-                        <th:block th:text='${#numbers.formatDecimal(student.getAverage(j.getYear(), m.getCode()),1, 2)}'></th:block>
+                        <th:block th:if="${student.getAverage(j.getYear(), m.getCode()) == null}">
+                            <i class="bi bi-exclamation-square-fill text-info" title="Average For This Course"></i>
+                        </th:block>
+                        <th:block th:unless="${student.getAverage(j.getYear(), m.getCode()) == null}">
+                            <th:block
+                                    th:text='${#numbers.formatDecimal(student.getAverage(j.getYear(), m.getCode()),1, 2)}'></th:block>
+                        </th:block>
                     </div>
                     <div class="col-1">
-                        <th:block th:if="${student.isPassed(j.getYear(), m.getCode())}">
-                            <span class="text-success fw-bold">Passed</span>
+                        <th:block th:if="${student.isPassed(j.getYear(), m.getCode()) == null}">
+                            <i class="bi bi-exclamation-square-fill text-info" title="Passed marker"></i>
                         </th:block>
-                        <th:block th:unless="${student.isPassed(j.getYear(), m.getCode())}">
-                            <span class="text-danger fw-bold">Failed</span>
+                        <th:block th:unless="${student.isPassed(j.getYear(), m.getCode()) == null}">
+                            <th:block th:if="${student.isPassed(j.getYear(), m.getCode())}">
+                                <span class="text-success fw-bold">Passed</span>
+                            </th:block>
+                            <th:block th:unless="${student.isPassed(j.getYear(), m.getCode())}">
+                                <span class="text-danger fw-bold">Failed</span>
+                            </th:block>
                         </th:block>
                     </div>
                 </div>
@@ -132,31 +155,58 @@
                     Average:
                 </div>
                 <div class="col-1 text-start">
-                    <th:block th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getAverageScore(), 1, 2)}">
+                    <th:block th:if="${student.getYearStats(j.getYear()).getAverageScore() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info" title="Average Year Score"></i>
+                    </th:block>
+
+                    <th:block th:unless="${student.getYearStats(j.getYear()).getAverageScore() == null}">
+                        <th:block
+                                th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getAverageScore(), 1, 2)}">
+                        </th:block>
                     </th:block>
                 </div>
                 <div class="col-2 fw-bold text-end">
                     Min Course Score:
                 </div>
                 <div class="col-1 text-start">
-                    <th:block th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getMinCourseScore(), 1 , 2)}">
+                    <th:block th:if="${student.getYearStats(j.getYear()).getMinCourseScore() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info" title="Minimal Course Score"></i>
+                    </th:block>
+
+                    <th:block th:unless="${student.getYearStats(j.getYear()).getMinCourseScore() == null}">
+                        <th:block
+                                th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getMinCourseScore(), 1 , 2)}">
+                        </th:block>
                     </th:block>
                 </div>
                 <div class="col-2 fw-bold text-end">
                     Max Course Score:
                 </div>
                 <div class="col-1 text-start">
-                    <th:block th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getMaxCourseScore(), 1, 2)}">
+                    <th:block th:if="${student.getYearStats(j.getYear()).getMaxCourseScore() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info" title="Maximal Course Score"></i>
+                    </th:block>
+
+                    <th:block th:unless="${student.getYearStats(j.getYear()).getMaxCourseScore() == null}">
+                        <th:block
+                                th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getMaxCourseScore(), 1, 2)}">
+                        </th:block>
                     </th:block>
                 </div>
             </div>
             <div class="row pb-2 pt-1" style="background-color: #eee">
                 <div class="col-12 fw-bold text-center">
-                    <th:block th:if="${student.getYearStats(j.getYear()).isPassed()}">
-                        <span class="text-success fw-bold  border rounded border-success px-4 py-3 d-inline-block">Passed</span>
+                    <th:block th:if="${student.getYearStats(j.getYear()).isPassed() == null}">
+                        <i class="bi bi-exclamation-square-fill text-info" title="Year Status Indicator"></i>
                     </th:block>
-                    <th:block th:unless="${student.getYearStats(j.getYear()).isPassed()}">
-                        <span class="text-danger fw-bold  border rounded border-danger px-4 py-3 d-inline-block">Failed</span>
+
+                    <th:block th:unless="${student.getYearStats(j.getYear()).isPassed() == null}">
+                        <th:block th:if="${student.getYearStats(j.getYear()).isPassed()}">
+                            <span class="text-success fw-bold  border rounded border-success px-4 py-3 d-inline-block">Passed</span>
+                        </th:block>
+                        <th:block th:unless="${student.getYearStats(j.getYear()).isPassed()}">
+                            <span class="text-danger fw-bold  border rounded border-danger px-4 py-3 d-inline-block">Failed</span>
+                        </th:block>
                     </th:block>
                 </div>
             </div>

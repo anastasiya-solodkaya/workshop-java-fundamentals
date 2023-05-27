@@ -2,6 +2,7 @@ package ae.encodelab.basics.service.model;
 
 import ae.encodelab.basics.service.model.journals.StudentJournalYearRecord;
 import ae.encodelab.basics.service.model.stats.BasicStudentStatsitics;
+import ae.encodelab.basics.service.model.stats.SingleCourseStatistics;
 import ae.encodelab.basics.service.model.stats.SingleYearStatistics;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,15 +23,16 @@ public class StudentDetailedInfo {
     private final List<SingleYearStatistics> marksStatistics;
     private final List<StudentJournalYearRecord> journal;
 
-    public double getAverage(int year, String courseCode){
+    public Double getAverage(int year, String courseCode){
         SingleYearStatistics stats = getYearStats(year);
         if(stats == null){
-            return 0;
+            return 0.0;
         }
 
-        return stats.getCourseAverageScore().get(courseCode).getAverage();
+        SingleCourseStatistics average = stats.getCourseAverageScore().get(courseCode);
+        return average.getAverage();
     }
-    public boolean isPassed(int year, String courseCode){
+    public Boolean isPassed(int year, String courseCode){
         SingleYearStatistics stats = getYearStats(year);
         if(stats == null){
             return false;

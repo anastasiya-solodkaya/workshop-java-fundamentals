@@ -56,15 +56,15 @@ public class StudentStorageManager {
 
         List<Student> students = loadFromFile(STUDENTS_FILENAME, StudentCSVRecord.class,
                 this::createStudent);
-        List<TeacherJobCSVRecord> teacherJobs = loadFromFile(TEACHER_JOBS, TeacherJobCSVRecord.class);
+//        List<TeacherJobCSVRecord> teacherJobs = loadFromFile(TEACHER_JOBS, TeacherJobCSVRecord.class);
 
-        Map<Long, List<TeacherPosition>> teacherPositionsMap =
-                teacherJobs.stream().collect(
-                        Collectors.groupingBy(TeacherJobCSVRecord::getTeacher,
-                                Collectors.mapping(this::createTeacherPosition, Collectors.toList())));
+//        Map<Long, List<TeacherPosition>> teacherPositionsMap =
+//                teacherJobs.stream().collect(
+//                        Collectors.groupingBy(TeacherJobCSVRecord::getTeacher,
+//                                Collectors.mapping(this::createTeacherPosition, Collectors.toList())));
 
-        List<Teacher> teachers = loadFromFile(TEACHER, PersonCSVRecord.class,
-                s -> new Teacher(createPerson(s), teacherPositionsMap.get(s.getId())));
+//        List<Teacher> teachers = loadFromFile(TEACHER, PersonCSVRecord.class,
+//                s -> new Teacher(createPerson(s), teacherPositionsMap.get(s.getId())));
 
         List<StudentJournalCSVRecord> journalsCSV = loadFromFile(JOURNAL, StudentJournalCSVRecord.class);
 

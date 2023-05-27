@@ -11,6 +11,7 @@ import ae.encodelab.basics.service.model.StudentDetailedInfo;
 import ae.encodelab.basics.service.model.journals.CourseMarks;
 import ae.encodelab.basics.service.model.journals.StudentJournalYearRecord;
 import ae.encodelab.basics.service.model.stats.BasicStudentStatsitics;
+import ae.encodelab.basics.service.model.stats.ScholarshipSupport;
 import ae.encodelab.basics.service.model.stats.SingleCourseStatistics;
 import ae.encodelab.basics.service.model.stats.SingleYearStatistics;
 import org.springframework.data.domain.Page;
@@ -78,6 +79,7 @@ public class DefaultStudentsService implements StudentsService {
 
     private List<SingleYearStatistics> makeMarksStat(Student student, List<StudentJournalYearRecord> journals) {
         List<SingleYearStatistics> stats = new ArrayList<>();
+        SingleYearStatistics previous = null;
         for (StudentJournalYearRecord mark : journals) {
             List<CourseMarks> courseMarks = mark.getMarks();
             Map<String, SingleCourseStatistics> averages = new HashMap<>();
@@ -99,6 +101,8 @@ public class DefaultStudentsService implements StudentsService {
             }
             int[] allMarks = courseMarks.stream().flatMapToInt(t -> t.getMarks().stream().mapToInt(o -> o)).toArray();
             double averageYearScore = extension.calculateAverageScore(allMarks);
+            ScholarshipSupport support = previous == null ? ScholarshipSupport.STANDARD :
+                    extension.getScholarshipSupport(previous.isPassed(), previous.getAverageScore(), previous.getMinCourseScore());
             SingleYearStatistics yearStatistics = SingleYearStatistics.builder()
                     .courseAverageScore(averages)
                     .year(mark.getYear())
@@ -106,8 +110,9 @@ public class DefaultStudentsService implements StudentsService {
                     .minCourseScore(extension.findMinCourseScore(coursesAverages))
                     .averageScore(averageYearScore)
                     .passed(extension.checkYearPassed(passes))
-                    .risk(extension.checkRisk(coursesAverages))
+                    .scholarshipSupport(support.name())
                     .build();
+            previous = yearStatistics;
             stats.add(yearStatistics);
         }
 
@@ -126,7 +131,9 @@ public class DefaultStudentsService implements StudentsService {
         StudentJournal journal = storage.getStudentJournal(id);
         List<StudentJournalYearRecord> journals = Collections.emptyList();
         if(journal != null) {
-            journals = journal.records().stream().sorted(Comparator.comparingInt(StudentJournalRecord::year))
+            System.out.println(journal.records());
+            journals = journal.records().stream()
+                    .sorted(Comparator.comparingInt(StudentJournalRecord::year))
                     .map(j -> StudentJournalYearRecord.builder()
                             .yearOfEducation(j.yearOfEducation())
                             .year(j.year())

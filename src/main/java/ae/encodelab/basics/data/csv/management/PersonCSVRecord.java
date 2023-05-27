@@ -19,7 +19,7 @@ public class PersonCSVRecord {
     private String lastName;
     @CsvBindByName
     private boolean gender;
-    @CsvDate(value = "MM/dd/yyyy")
+    @CsvDate(value = "dd/MM/yyyy")
     @CsvBindByName(column = "birth_date")
     private LocalDate birthDate;
 }

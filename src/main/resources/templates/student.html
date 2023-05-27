@@ -27,14 +27,14 @@
             <div class="col-2 text-end fw-bold">
                 Name
             </div>
-            <div class="col-2 text-start">
+            <div class="col-4 text-start">
                 <th:block th:text="${student.getPersonalInfo().getLastName()}"></th:block>
                 <th:block th:text="${student.getPersonalInfo().getFirstName()}"></th:block>
             </div>
             <div class="col-2 text-end fw-bold">
                 Department
             </div>
-            <div class="col-2 text-start">
+            <div class="col-4 text-start">
                 <a th:href="@{/department/{code}/students(code=${student.getDepartmentCode()})}" class="link-body-emphasis text-decoration-none student-link">
                     <span><th:block th:text="${student.getDepartmentName()}"></th:block></span>
                 </a>
@@ -43,7 +43,7 @@
             <div class="col-2 text-end fw-bold">
                 Gender
             </div>
-            <div class="col-2 text-start">
+            <div class="col-4 text-start">
                 <th:block th:if="${student.getPersonalInfo().isGender()}">
                     <i class="bi bi-gender-female"></i> Female
                 </th:block>
@@ -54,7 +54,7 @@
             <div class="col-2 text-end fw-bold">
                 Current Year
             </div>
-            <div class="col-2 text-start">
+            <div class="col-4 text-start">
                 <th:block th:if="${student.getStats().getGraduatingThisYear()}">
                     <i class="bi bi-mortarboard-fill text-danger"></i>
                 </th:block>
@@ -67,7 +67,7 @@
             <div class="col-2 text-end fw-bold">
                 Birth Date
             </div>
-            <div class="col-2 text-start">
+            <div class="col-4 text-start">
                 <th:block th:text="${student.getPersonalInfo().getDateOfBirth()}"></th:block>
                 <th:block th:if="${student.getStats().getBirthdayToday() == null}">
                     <i class="bi bi-emoji-expressionless-fill text-muted"></i>
@@ -80,7 +80,7 @@
             <div class="col-2 text-end fw-bold">
                 Admission Year
             </div>
-            <div class="col-2  text-start">
+            <div class="col-4  text-start">
                 <th:block th:text="${student.getYearStarted()}"></th:block>
             </div>
 
@@ -88,25 +88,17 @@
     </div>
     <th:block th:each="j: ${student.getJournal()}">
         <div class="container border border-2 rounded border-primary my-4">
-            <div class="row bg-primary text-white py-3">
+            <div class="row bg-primary text-white py-3 justify-content-between">
                 <div class="col-1 fw-bold">
                     Year #<th:block th:text="${j.getYearOfEducation()}"></th:block>.
                 </div>
-                <div class="col-2">
-                    <th:block th:if="${student.getYearStats(j.getYear()).isHighRisk()}">
-                        <span class="text-danger fw-bold bg-white px-3 py-2">HIGH RISK</span>
-                    </th:block>
-                    <th:block th:if="${student.getYearStats(j.getYear()).isMediumRisk()}">
-                        <span class="text-warning fw-bold bg-white px-3 py-2">MEDIUM RISK</span>
-                    </th:block>
-                    <th:block th:if="${student.getYearStats(j.getYear()).isLowRisk()}">
-                        <span class="text-info fw-bold bg-white px-3 py-2">LOW RISK</span>
-                    </th:block>
-                    <th:block th:if="${student.getYearStats(j.getYear()).isNoRisk()}">
-                        <span class="text-success fw-bold bg-white px-3 py-2">NO RISK</span>
+                <div class="col-3 text-center">
+                    <th:block th:if="${j.getYear() == 2023}">
+                        <span class="text-warning fw-bold">Scholarship: <th:block th:text="${student.getYearStats(j.getYear()).getScholarshipSupport()}">
+                        </th:block></span>
                     </th:block>
                 </div>
-                <div class="offset-8 col-1">
+                <div class="col-1 text-end">
                     <th:block th:text="${j.getYear()}"></th:block>
                 </div>
             </div>
@@ -115,14 +107,14 @@
                     <div class="col-3 fw-bold">
                         <th:block th:text="${m.getName()}"></th:block>
                     </div>
-                    <div class="col-3">
+                    <div class="col-5">
                         <th:block th:each="mark: ${m.getMarks()}">
                         <th:block th:text='${mark}'></th:block>
                         </th:block>
                     </div>
-                    <div class="col-1">
+                    <div class="col-2">
                         <i class="bi bi-arrow-right-short"></i>
-                        <th:block th:text='${student.getAverage(j.getYear(), m.getCode())}'></th:block>
+                        <th:block th:text='${#numbers.formatDecimal(student.getAverage(j.getYear(), m.getCode()),1, 2)}'></th:block>
                     </div>
                     <div class="col-1">
                         <th:block th:if="${student.isPassed(j.getYear(), m.getCode())}">
@@ -135,26 +127,26 @@
                 </div>
 
             </th:block>
-            <div class="row border-top border-primary pt-3 pb-1 justify-content-between" style="background-color: #eee">
+            <div class="row border-top border-primary pt-3 pb-2 justify-content-center" style="background-color: #eee">
                 <div class="col-2 fw-bold text-end">
                     Average:
                 </div>
                 <div class="col-1 text-start">
-                    <th:block th:text="${student.getYearStats(j.getYear()).getAverageScore()}">
+                    <th:block th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getAverageScore(), 1, 2)}">
                     </th:block>
                 </div>
                 <div class="col-2 fw-bold text-end">
                     Min Course Score:
                 </div>
                 <div class="col-1 text-start">
-                    <th:block th:text="${student.getYearStats(j.getYear()).getMinCourseScore()}">
+                    <th:block th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getMinCourseScore(), 1 , 2)}">
                     </th:block>
                 </div>
                 <div class="col-2 fw-bold text-end">
                     Max Course Score:
                 </div>
                 <div class="col-1 text-start">
-                    <th:block th:text="${student.getYearStats(j.getYear()).getMaxCourseScore()}">
+                    <th:block th:text="${#numbers.formatDecimal(student.getYearStats(j.getYear()).getMaxCourseScore(), 1, 2)}">
                     </th:block>
                 </div>
             </div>

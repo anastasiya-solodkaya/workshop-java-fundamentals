@@ -1,8 +1,16 @@
-code,name
-1,Mathematics
-2,English Language
-3,English Literature
-4,Physics
-5,Database
-6,Java
-7,Web Programming
+code,name,departments
+1,Mathematical Analysis,MATH INF PHYS
+2,English Language,MATH INF PHYS LIT
+3,English Literature,LIT
+4,Physics,MATH INF PHYS
+5,Databases,MATH INF
+6,Java Programming,MATH INF
+7,Web Programming,MATH INF
+8,Fortran Programming,PHYS
+9,Algebra,MATH INF
+10,Functional Analysis,MATH INF PHYS
+11,Geometry,MATH INF
+12,Graphics,MATH INF
+13,Project Management, MATH INF PHYS
+14,Networks, MATH INF
+15,Philosophy Fundamentals,MATH INF PHYS LIT

@@ -20,7 +20,7 @@
         <ul class="nav nav-pills">
             <li layout:fragment="home-menu"><a th:href="@{/}" class="nav-link">Home</a></li>
             <li layout:fragment="students-menu"><a th:href="@{/students}" class="nav-link">Students</a></li>
-<!--            <li layout:fragment="teachers-menu"><a th:href="@{/teachers}" class="nav-link">Teachers</a></li>-->
+            <!--            <li layout:fragment="teachers-menu"><a th:href="@{/teachers}" class="nav-link">Teachers</a></li>-->
         </ul>
     </header>
 </div>
@@ -28,6 +28,10 @@
 </section>
 <section layout:fragment="table">
 </section>
-
+<div class="container">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <p class="col-md-4 mb-0 text-muted">© 2023 enCodeLab</p>
+    </footer>
+</div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 package ae.encodelab.basics.service;
 
-import ae.encodelab.basics.service.model.stats.Risk;
+import ae.encodelab.basics.service.model.stats.ScholarshipSupport;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -8,7 +8,8 @@ import java.util.Arrays;
 
 public class StudentsDataProcessingExtension {
 
-    public static final int PASS_MARK = 5;
+    public static final int LLAST_EDUCATION_YEAR = 5;
+    public static final int PASS_MARK = 7;
 
     public Integer getCountOfRepeatingYears(int yearOfAdmission, int actualYearOfEducation) {
         // Check how many times student was repeating the same year of education (e.g. because of illness).
@@ -23,12 +24,12 @@ public class StudentsDataProcessingExtension {
 
     public Boolean isGraduatingThisYear(int actualYearOfEducation) {
         // Check if student is graduating this year (mean he is on 5th year of education)
-        return actualYearOfEducation == PASS_MARK;
+        return actualYearOfEducation == LLAST_EDUCATION_YEAR;
     }
 
     public Boolean isFresher(int yearOfAdmission) {
         // Check if student is fresher (mean he was admitted to university year ago)
-        return yearOfAdmission == LocalDate.now().getYear();
+        return yearOfAdmission == LocalDate.now().getYear() - 1;
     }
 
     public Integer getCurrentAge(LocalDate dateOfBirth) {
@@ -44,7 +45,7 @@ public class StudentsDataProcessingExtension {
         // Check if today is person's birthday.
         // Period.between() to find differences between dates and
         // Period#getDays() to determine if today is exact date of birthday
-        return true;
+        return Period.between(now, dateOfBirth).getDays() == 0;
     }
 
     public Double calculateAverageScore(int[] marks) {
@@ -60,7 +61,7 @@ public class StudentsDataProcessingExtension {
     }
 
     public Boolean checkCoursePassed(double avgScore) {
-        return avgScore >= 7;
+        return avgScore >= PASS_MARK;
     }
 
     public Boolean checkYearPassed(boolean[] passes) {
@@ -72,25 +73,17 @@ public class StudentsDataProcessingExtension {
         return true;
     }
 
-    public Risk checkRisk(double[] coursesAverages) {
-        int count = 0;
-        for (double coursesAverage : coursesAverages) {
-            if (coursesAverage > PASS_MARK) {
-                count++;
-            }
-        }
+    public ScholarshipSupport getScholarshipSupport(boolean previousYearResult, double previousYearAverage,
+                                                    double previousYearMinimum) {
 
-        double percentage = ((double) count) / coursesAverages.length;
-
-        if (percentage == 1.0) {
-            return Risk.NO_RISK;
-        } else if (percentage >= 0.7) {
-            return Risk.LOW;
-        } else if (percentage >= 0.5) {
-            return Risk.MEDIUM;
+        if (!previousYearResult){
+            return ScholarshipSupport.NO_SUPPORT;
+        } else if(previousYearAverage < 9.0) {
+            return ScholarshipSupport.BASIC;
+        } else if(previousYearMinimum > 9.0) {
+            return ScholarshipSupport.SPECIAL;
         } else {
-            return Risk.HIGH;
+            return ScholarshipSupport.STANDARD;
         }
-
     }
 }

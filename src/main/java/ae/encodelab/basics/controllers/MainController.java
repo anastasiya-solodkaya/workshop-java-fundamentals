@@ -21,7 +21,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/")
 public class MainController {
-    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int DEFAULT_PAGE_SIZE = 20;
     @Value("${spring.application.name}")
     String appName;
 
